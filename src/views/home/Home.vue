@@ -30,7 +30,12 @@
     data() {
       return {
         banners: [],
-        recommends: []
+        recommends: [],
+        goods: {
+          'fashion': {page: 0, list: []},
+          'new': {page: 0, list: []},
+          'handpick': {page: 0, list: []},
+        }
       }
     },
     created() {
