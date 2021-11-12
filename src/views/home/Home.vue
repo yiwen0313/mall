@@ -16,7 +16,7 @@
   import RecommendView from "./childComps/RecommendView";
   import FeatureView from "./childComps/FeatureView";
 
-  import {getHomeMultidata} from "network/home";
+  import {getHomeMultidata, getHomeGoods} from "network/home";
 
   export default {
     name: "Home",
@@ -32,17 +32,34 @@
         banners: [],
         recommends: [],
         goods: {
-          'fashion': {page: 0, list: []},
+          'pop': {page: 0, list: []},
           'new': {page: 0, list: []},
-          'handpick': {page: 0, list: []},
+          'sell': {page: 0, list: []},
         }
       }
     },
     created() {
-      getHomeMultidata().then(res => {
-        this.banners = res.data.banner.list
-        this.recommends = res.data.recommend.list
-      })
+      // 1.请求多个数据
+      this.getHomeMultidata()
+
+      // 2.请求商品数据
+      this.getHomeGoods('pop')
+      this.getHomeGoods('new')
+      this.getHomeGoods('sell')
+    },
+    methods:{
+      getHomeMultidata() {
+        getHomeMultidata().then(res => {
+          this.banners = res.data.banner.list
+          this.recommends = res.data.recommend.list
+        })
+      },
+      getHomeGoods(type) {
+        const page = this.goods[type].page + 1
+        getHomeGoods(type, page).then(res => {
+          this.goods[type].list = res.data.list
+        })
+      }
     }
   }
 </script>
