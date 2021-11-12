@@ -4,11 +4,14 @@
     <home-swiper :banners="banners"/>
     <recommend-view :recommends="recommends"/>
     <feature-view/>
+    <tab-control class="tab-control" :titles="['流行', '新款', '精选']"/>
   </div>
 </template>
 
 <script>
   import NavBar from "components/common/navbar/NavBar";
+  import TabControl from "components/content/tabControl/TabControl";
+
   import HomeSwiper from "./childComps/HomeSwiper";
   import RecommendView from "./childComps/RecommendView";
   import FeatureView from "./childComps/FeatureView";
@@ -19,6 +22,7 @@
     name: "Home",
     components: {
       NavBar,
+      TabControl,
       HomeSwiper,
       RecommendView,
       FeatureView
@@ -39,6 +43,10 @@
 </script>
 
 <style scoped>
+  #home {
+    height: 2000px;
+  }
+
   .home-nav {
     background-color: var(--color-tint);
     color: #fff;
@@ -46,5 +54,10 @@
     position: sticky;
     top: 0;
     z-index: 999;
+  }
+
+  .tab-control {
+    position: sticky;
+    top: 44px;
   }
 </style>
