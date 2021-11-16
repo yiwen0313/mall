@@ -1,13 +1,16 @@
 <template>
   <div id="home">
     <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
-    <home-swiper :banners="banners"/>
-    <recommend-view :recommends="recommends"/>
-    <feature-view/>
-    <tab-control class="tab-control"
-                 :titles="['流行', '新款', '精选']"
-                 @tabClick="tabClick"/>
-    <goods-list :goods="showGoods"/>
+
+    <scroll class="content">
+      <home-swiper :banners="banners"/>
+      <recommend-view :recommends="recommends"/>
+      <feature-view/>
+      <tab-control class="tab-control"
+                   :titles="['流行', '新款', '精选']"
+                   @tabClick="tabClick"/>
+      <goods-list :goods="showGoods"/>
+    </scroll>
   </div>
 </template>
 
@@ -15,6 +18,7 @@
   import NavBar from "components/common/navbar/NavBar";
   import TabControl from "components/content/tabControl/TabControl";
   import GoodsList from "components/content/goods/GoodsList";
+  import Scroll from "components/common/scroll/Scroll";
 
   import HomeSwiper from "./childComps/HomeSwiper";
   import RecommendView from "./childComps/RecommendView";
@@ -28,6 +32,7 @@
       NavBar,
       TabControl,
       GoodsList,
+      Scroll,
       HomeSwiper,
       RecommendView,
       FeatureView
@@ -97,7 +102,8 @@
 
 <style scoped>
   #home {
-    height: 9999px;
+    height: 100vh;
+    position: relative;
   }
 
   .home-nav {
@@ -114,5 +120,15 @@
     top: 44px;
 
     z-index: 999;
+  }
+
+  .content {
+    /*overflow: hidden;*/
+
+    position: absolute;
+    top: 44px;
+    bottom: 49px;
+    left: 0;
+    right: 0;
   }
 </style>
