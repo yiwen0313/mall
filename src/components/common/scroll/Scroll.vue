@@ -9,8 +9,6 @@
 <script>
 import BScroll from "better-scroll";
 
-//ref如果是绑定在组件中的，那么通过 this.$refs.refname获取到的是一个组件对象
-//ref如果是绑定在普通元素中的，那么通过 this.$refs.refname获取到的是一个元素对象
 export default {
   name: "Scroll",
   data() {
@@ -19,11 +17,18 @@ export default {
     }
   },
   mounted() {
+    //ref如果是绑定在组件中的，那么通过 this.$refs.refname获取到的是一个组件对象
+    //ref如果是绑定在普通元素中的，那么通过 this.$refs.refname获取到的是一个元素对象
     this.scroll = new BScroll(this.$refs.wrapper, {
       observeDOM: true,
       click: true,
       taps: true
     })
+  },
+  methods: {
+    scrollTo(x, y, time=300) {
+      this.scroll.scrollTo(x, y, time)
+    }
   }
 }
 </script>

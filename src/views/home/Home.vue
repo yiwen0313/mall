@@ -2,7 +2,7 @@
   <div id="home">
     <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
 
-    <scroll class="content">
+    <scroll class="content" ref="scroll">
       <home-swiper :banners="banners"/>
       <recommend-view :recommends="recommends"/>
       <feature-view/>
@@ -11,6 +11,9 @@
                    @tabClick="tabClick"/>
       <goods-list :goods="showGoods"/>
     </scroll>
+
+    <!-- 当我们需要监听一个组件的原生事件时，不许给对应的事件加上 .native修饰符才能进行监听 -->
+    <back-top @click.native="backClick"/>
   </div>
 </template>
 
@@ -19,6 +22,7 @@
   import TabControl from "components/content/tabControl/TabControl";
   import GoodsList from "components/content/goods/GoodsList";
   import Scroll from "components/common/scroll/Scroll";
+  import BackTop from "components/content/backTop/BackTop";
 
   import HomeSwiper from "./childComps/HomeSwiper";
   import RecommendView from "./childComps/RecommendView";
@@ -33,6 +37,7 @@
       TabControl,
       GoodsList,
       Scroll,
+      BackTop,
       HomeSwiper,
       RecommendView,
       FeatureView
@@ -79,6 +84,9 @@
             this.currentIndex = 'sell'
             break
         }
+      },
+      backClick() {
+        this.$refs.scroll.scrollTo(0, 0)
       },
 
       /*
