@@ -2,7 +2,7 @@
   <div id="home">
     <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
 
-    <scroll class="content" ref="scroll">
+    <scroll class="content" ref="scroll" :probe-type="3" @scroll="contentScroll">
       <home-swiper :banners="banners"/>
       <recommend-view :recommends="recommends"/>
       <feature-view/>
@@ -13,7 +13,7 @@
     </scroll>
 
     <!-- 当我们需要监听一个组件的原生事件时，不许给对应的事件加上 .native修饰符才能进行监听 -->
-    <back-top @click.native="backClick"/>
+    <back-top @click.native="backClick" v-show="isShowBackTop"/>
   </div>
 </template>
 
@@ -51,7 +51,8 @@
           'new': {page: 0, list: []},
           'sell': {page: 0, list: []},
         },
-        currentIndex: 'pop'
+        currentIndex: 'pop',
+        isShowBackTop: false
       }
     },
     computed: {
@@ -87,6 +88,9 @@
       },
       backClick() {
         this.$refs.scroll.scrollTo(0, 0)
+      },
+      contentScroll(position) {
+        this.isShowBackTop  = (-position.y) > 1000
       },
 
       /*
