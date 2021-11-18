@@ -70,15 +70,29 @@
       this.getHomeGoods('sell')
     },
     mounted() {
+      // 对refresh非常频繁的问题，进行防抖操作
+      const refresh = this.debounce(this.$refs.scroll.refresh, 200)
       // 监听item中图片的加载完成
       this.$bus.$on('itemImageLoad', () => {
-        this.$refs.scroll.refresh()
+        refresh()
       })
     },
     methods:{
       /*
       * 事件监听相关的方法
       * */
+
+      // 防抖函数
+      debounce(func, delay) {
+        let timer = null
+        return function (...args) {
+          if (timer) clearTimeout(timer)
+          timer = setTimeout(() => {
+            func.apply(this, args)
+          }, delay)
+        }
+      },
+
       tabClick(index) {
         switch (index) {
           case 0:
