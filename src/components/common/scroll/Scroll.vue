@@ -15,6 +15,10 @@ export default {
     probeType: {
       type: Number,
       default: 0
+    },
+    pullUpLoad: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -34,6 +38,7 @@ export default {
       click: true,
       taps: true,
       probeType: this.probeType,
+      pullUpLoad: this.pullUpLoad
       // BetterScroll2 后使用此方法
       // observeImage: true
     })
@@ -42,6 +47,11 @@ export default {
     this.scroll.on('scroll', (position) => {
       this.$emit('scroll', position)
     })
+
+    // 3.监听scroll滚动到底部
+    this.scroll.on('pullingUp', () => {
+      this.$emit('pullingUp')
+    })
   },
   methods: {
     scrollTo(x, y, time=300) {
@@ -49,6 +59,9 @@ export default {
     },
     refresh() {
       this.scroll && this.scroll.refresh()
+    },
+    finishPullUp() {
+      this.scroll && this.scroll.finishPullUp()
     }
   }
 }
