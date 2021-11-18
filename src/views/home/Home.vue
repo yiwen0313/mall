@@ -69,6 +69,12 @@
       this.getHomeGoods('new')
       this.getHomeGoods('sell')
     },
+    mounted() {
+      // 监听item中图片的加载完成
+      this.$bus.$on('itemImageLoad', () => {
+        this.$refs.scroll.refresh()
+      })
+    },
     methods:{
       /*
       * 事件监听相关的方法
@@ -105,7 +111,8 @@
       getHomeGoods(type) {
         const page = this.goods[type].page + 1
         getHomeGoods(type, page).then(res => {
-          this.goods[type].list = res.data.list
+          this.goods[type].list.push(...res.data.list)
+          this.goods[type].page += 1
         })
       }
     }

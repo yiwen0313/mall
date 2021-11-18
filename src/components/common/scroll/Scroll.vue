@@ -33,7 +33,9 @@ export default {
       observeDOM: true,
       click: true,
       taps: true,
-      probeType: this.probeType
+      probeType: this.probeType,
+      // BetterScroll2 后使用此方法
+      // observeImage: true
     })
 
     // 2.监听滚动的位置
@@ -43,7 +45,10 @@ export default {
   },
   methods: {
     scrollTo(x, y, time=300) {
-      this.scroll.scrollTo(x, y, time)
+      this.scroll && this.scroll.scrollTo(x, y, time)
+    },
+    refresh() {
+      this.scroll && this.scroll.refresh()
     }
   }
 }
