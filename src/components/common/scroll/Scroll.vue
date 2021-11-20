@@ -39,6 +39,7 @@ export default {
       taps: true,
       probeType: this.probeType,
       pullUpLoad: this.pullUpLoad,
+      mouseWheel: true
       // BetterScroll2 后使用此方法
       // observeImage: true
     })

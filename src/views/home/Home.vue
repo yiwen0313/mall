@@ -1,6 +1,11 @@
 <template>
   <div id="home">
     <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
+    <tab-control :titles="['流行', '新款', '精选']"
+                 @tabClick="tabClick"
+                 ref="tabControl1"
+                 class="tab-control"
+                 v-show="isTabFixed"/>
 
     <scroll
       class="content"
@@ -9,12 +14,12 @@
       @scroll="contentScroll"
       :pull-up-load="true"
       @pullingUp="loadMore">
-      <home-swiper :banners="banners"/>
+      <home-swiper :banners="banners" @swiperItemLoad="swiperItemLoad"/>
       <recommend-view :recommends="recommends"/>
       <feature-view/>
-      <tab-control class="tab-control"
-                   :titles="['流行', '新款', '精选']"
-                   @tabClick="tabClick"/>
+      <tab-control :titles="['流行', '新款', '精选']"
+                   @tabClick="tabClick"
+                   ref="tabControl2"/>
       <goods-list :goods="showGoods"/>
     </scroll>
 
@@ -58,13 +63,15 @@
           'new': {page: 0, list: []},
           'sell': {page: 0, list: []},
         },
-        currentIndex: 'pop',
-        isShowBackTop: false
+        currentType: 'pop',
+        isShowBackTop: false,
+        tabOffsetTop: 0,
+        isTabFixed: false
       }
     },
     computed: {
       showGoods() {
-        return this.goods[this.currentIndex].list
+        return this.goods[this.currentType].list
       }
     },
     created() {
@@ -77,6 +84,7 @@
       this.getHomeGoods('sell')
     },
     mounted() {
+      // 1.图片加载完成啊的事件监听
       // 对refresh非常频繁的问题，进行防抖操作
       const refresh = debounce(this.$refs.scroll.refresh, 200)
       // 监听item中图片的加载完成
@@ -91,24 +99,35 @@
       tabClick(index) {
         switch (index) {
           case 0:
-            this.currentIndex = 'pop'
+            this.currentType = 'pop'
             break
           case 1:
-            this.currentIndex = 'new'
+            this.currentType = 'new'
             break
           case 2:
-            this.currentIndex = 'sell'
+            this.currentType = 'sell'
             break
         }
+        this.$refs.tabControl1.currentIndex = index
+        this.$refs.tabControl2.currentIndex = index
       },
       backClick() {
         this.$refs.scroll.scrollTo(0, 0)
       },
       contentScroll(position) {
+        // 1.判断 BackTop是否显示
         this.isShowBackTop  = (-position.y) > 1000
+
+        // 2.决定tabControl是否吸顶(position: fixed)
+        this.isTabFixed = (-position.y) > this.tabOffsetTop
       },
       loadMore() {
-        this.getHomeGoods(this.currentIndex)
+        this.getHomeGoods(this.currentType)
+      },
+      swiperItemLoad() {
+        // 1.获取tabControl的 offsetTop
+        // 所有的组件都有一个属性$el: 用于获取组件中的元素
+        this.tabOffsetTop = this.$refs.tabControl2.$el.offsetTop
       },
 
       /*
@@ -144,20 +163,19 @@
     background-color: var(--color-tint);
     color: #fff;
 
-    position: sticky;
+    /*在使用浏览器原生滚动时，为了让导航不跟随仪器滚动*/
+    /*position: sticky;
     top: 0;
-    z-index: 999;
+    z-index: 999;*/
   }
 
   .tab-control {
-    position: sticky;
-    top: 44px;
-
+    position: relative;
     z-index: 999;
   }
 
   .content {
-    /*overflow: hidden;*/
+    overflow: hidden;
 
     position: absolute;
     top: 44px;
