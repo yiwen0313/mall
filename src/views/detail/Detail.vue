@@ -7,6 +7,8 @@
 <script>
 import DetailNavBar from "./childComps/DetailNavBar";
 
+import {getDetail} from "network/detail";
+
 export default {
   name: "Detail",
   components: {
@@ -18,7 +20,13 @@ export default {
     }
   },
   created() {
+    // 1.保存传入的 iid
     this.iid = this.$route.params.iid
+
+    // 2.根据 iid请求详细数据
+    getDetail(this.iid).then(res => {
+
+    })
   }
 }
 </script>
