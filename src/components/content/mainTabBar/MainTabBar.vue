@@ -1,5 +1,5 @@
 <template>
-  <tab-bar>
+  <tab-bar v-if="this.$route.meta.showTab">
     <tab-bar-item path="/home" activeColor="#ff5777">
       <img slot="item-icon" src="~assets/img/tabbar/home.svg" alt="">
       <img slot="item-active-icon" src="~assets/img/tabbar/home_active.svg" alt="">
