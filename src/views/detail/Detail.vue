@@ -8,6 +8,7 @@
       <detail-goods-info :detail-info="detailInfo" @image-load="imageLoad"/>
       <detail-param-info :param-info="paramInfo"/>
       <detail-comment-info :comment-info="commentInfo"/>
+      <goods-list :goods="recommends"/>
     </scroll>
   </div>
 </template>
@@ -22,8 +23,9 @@ import DetailParamInfo from "./childComps/DetailParamInfo";
 import DetailCommentInfo from "./childComps/DetailCommentInfo";
 
 import Scroll from "components/common/scroll/Scroll";
+import GoodsList from "components/content/goods/GoodsList";
 
-import {getDetail, Goods, Shop, GoodsParam} from "network/detail";
+import {getDetail, getRecommend, Goods, Shop, GoodsParam} from "network/detail";
 
 export default {
   name: "Detail",
@@ -35,7 +37,8 @@ export default {
     DetailGoodsInfo,
     DetailParamInfo,
     DetailCommentInfo,
-    Scroll
+    Scroll,
+    GoodsList
   },
   data() {
     return {
@@ -45,7 +48,8 @@ export default {
       shop: {},
       detailInfo: {},
       paramInfo: {},
-      commentInfo: {}
+      commentInfo: {},
+      recommends: []
     }
   },
   created() {
@@ -54,7 +58,6 @@ export default {
 
     // 2.根据 iid请求详细数据
     getDetail(this.iid).then(res => {
-      console.log(res);
       const data = res.result
       // 2.1 获取顶部的图片轮播数据
       this.topImages = data.itemInfo.topImages
@@ -75,6 +78,11 @@ export default {
       if (data.rate.cRate !== 0) {
         this.commentInfo = data.rate.list[0]
       }
+    })
+
+    // 3.请求推荐数据
+    getRecommend().then(res => {
+      this.recommends = res.data.list
     })
   },
   methods: {
