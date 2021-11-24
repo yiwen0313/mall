@@ -40,7 +40,7 @@
   import FeatureView from "./childComps/FeatureView";
 
   import {getHomeMultidata, getHomeGoods} from "network/home";
-  import {debounce} from "components/utils";
+  import {debounce} from "common/utils";
 
   export default {
     name: "Home",
