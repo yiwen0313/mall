@@ -1,14 +1,14 @@
 <template>
   <div id="detail">
-    <detail-nav-bar class="detail-nav"/>
+    <detail-nav-bar class="detail-nav" @titleClick="titleClick"/>
     <scroll class="content" ref="scroll">
       <detail-swiper :top-images="topImages"/>
       <detail-base-info :goods="goods"/>
       <detail-shop-info :shop="shop"/>
       <detail-goods-info :detail-info="detailInfo" @image-load="imageLoad"/>
-      <detail-param-info :param-info="paramInfo"/>
-      <detail-comment-info :comment-info="commentInfo"/>
-      <goods-list :goods="recommends"/>
+      <detail-param-info :param-info="paramInfo" ref="params"/>
+      <detail-comment-info :comment-info="commentInfo" ref="comment"/>
+      <goods-list :goods="recommends" ref="recommend"/>
     </scroll>
   </div>
 </template>
@@ -26,6 +26,7 @@ import Scroll from "components/common/scroll/Scroll";
 import GoodsList from "components/content/goods/GoodsList";
 
 import {getDetail, getRecommend, Goods, Shop, GoodsParam} from "network/detail";
+import {debounce} from "common/utils";
 
 export default {
   name: "Detail",
@@ -49,7 +50,9 @@ export default {
       detailInfo: {},
       paramInfo: {},
       commentInfo: {},
-      recommends: []
+      recommends: [],
+      themeTopYs: [],
+      detailImgListener: null
     }
   },
   created() {
@@ -85,9 +88,29 @@ export default {
       this.recommends = res.data.list
     })
   },
+  mounted() {
+    const refresh = debounce(this.$refs.scroll.refresh, 200)
+    this.detailImgListener = () => {
+      refresh()
+    }
+    this.$bus.$on('itemImageLoad', this.detailImgListener)
+  },
+  destroyed() {
+    this.$bus.$off('itemImageLoad', this.detailImgListener)
+  },
   methods: {
     imageLoad() {
       this.$refs.scroll.refresh()
+    },
+    titleClick(index) {
+
+      this.themeTopYs = []
+      this.themeTopYs.push(0)
+      this.themeTopYs.push(this.$refs.params.$el.offsetTop)
+      this.themeTopYs.push(this.$refs.comment.$el.offsetTop)
+      this.themeTopYs.push(this.$refs.recommend.$el.offsetTop)
+
+      this.$refs.scroll.scrollTo(0, -this.themeTopYs[index], 400)
     }
   }
 }
@@ -96,6 +119,7 @@ export default {
 <style scoped>
   #detail {
     height: 100vh;
+    position: relative;
   }
 
   .detail-nav {
@@ -105,6 +129,12 @@ export default {
   }
 
   .content {
-    height: calc(100% - 44px);
+    overflow: hidden;
+
+    position: absolute;
+    top: 44px;
+    bottom: 49px;
+    left: 0;
+    right: 0;
   }
 </style>

@@ -52,7 +52,7 @@
       BackTop,
       HomeSwiper,
       RecommendView,
-      FeatureView
+      FeatureView,
     },
     data() {
       return {
@@ -67,7 +67,8 @@
         isShowBackTop: false,
         tabOffsetTop: 0,
         isTabFixed: false,
-        saveY: 0
+        saveY: 0,
+        itemImgListener: null
       }
     },
     computed: {
@@ -84,6 +85,8 @@
     },
     deactivated() {
       this.saveY = this.$refs.scroll.getScrollY()
+
+      this.$bus.$off('itemImageLoad', this.itemImgListener)
     },
     created() {
       // 1.请求多个数据
@@ -99,9 +102,10 @@
       // 对refresh非常频繁的问题，进行防抖操作
       const refresh = debounce(this.$refs.scroll.refresh, 200)
       // 监听item中图片的加载完成
-      this.$bus.$on('itemImageLoad', () => {
+      this.itemImgListener = () => {
         refresh()
-      })
+      }
+      this.$bus.$on('itemImageLoad', this.itemImgListener)
     },
     methods:{
       /*
