@@ -5,7 +5,7 @@
       <detail-swiper :top-images="topImages"/>
       <detail-base-info :goods="goods"/>
       <detail-shop-info :shop="shop"/>
-      <detail-goods-info :detail-info="detailInfo" @image-load="imageLoad"/>
+      <detail-goods-info :detail-info="detailInfo" @detailImageLoad="detailImageLoad"/>
       <detail-param-info :param-info="paramInfo" ref="params"/>
       <detail-comment-info :comment-info="commentInfo" ref="comment"/>
       <goods-list :goods="recommends" ref="recommend"/>
@@ -26,7 +26,8 @@ import Scroll from "components/common/scroll/Scroll";
 import GoodsList from "components/content/goods/GoodsList";
 
 import {getDetail, getRecommend, Goods, Shop, GoodsParam} from "network/detail";
-import {debounce} from "common/utils";
+import {itemListenerMixin} from "common/mixin";
+import {debounce} from "../../common/utils";
 
 export default {
   name: "Detail",
@@ -41,6 +42,7 @@ export default {
     Scroll,
     GoodsList
   },
+  mixins: [itemListenerMixin],
   data() {
     return {
       iid: null,
@@ -52,7 +54,7 @@ export default {
       commentInfo: {},
       recommends: [],
       themeTopYs: [],
-      detailImgListener: null
+      getThemeTopY: null
     }
   },
   created() {
@@ -87,29 +89,27 @@ export default {
     getRecommend().then(res => {
       this.recommends = res.data.list
     })
-  },
-  mounted() {
-    const refresh = debounce(this.$refs.scroll.refresh, 200)
-    this.detailImgListener = () => {
-      refresh()
-    }
-    this.$bus.$on('itemImageLoad', this.detailImgListener)
-  },
-  destroyed() {
-    this.$bus.$off('itemImageLoad', this.detailImgListener)
-  },
-  methods: {
-    imageLoad() {
-      this.$refs.scroll.refresh()
-    },
-    titleClick(index) {
 
+    // 4.给getThemeTopY赋值（对给this.themeTopY赋值的操作进行防抖）
+    this.getThemeTopY = debounce(() => {
       this.themeTopYs = []
       this.themeTopYs.push(0)
       this.themeTopYs.push(this.$refs.params.$el.offsetTop)
       this.themeTopYs.push(this.$refs.comment.$el.offsetTop)
       this.themeTopYs.push(this.$refs.recommend.$el.offsetTop)
 
+      // console.log(this.themeTopYs);
+    }, 100)
+  },
+  destroyed() {
+    this.$bus.$off('itemImageLoad', this.itemImgListener)
+  },
+  methods: {
+    detailImageLoad() {
+      this.newRefresh()
+      this.getThemeTopY()
+    },
+    titleClick(index) {
       this.$refs.scroll.scrollTo(0, -this.themeTopYs[index], 400)
     }
   }
@@ -129,8 +129,6 @@ export default {
   }
 
   .content {
-    overflow: hidden;
-
     position: absolute;
     top: 44px;
     bottom: 49px;

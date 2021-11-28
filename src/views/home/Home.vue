@@ -40,7 +40,7 @@
   import FeatureView from "./childComps/FeatureView";
 
   import {getHomeMultidata, getHomeGoods} from "network/home";
-  import {debounce} from "common/utils";
+  import {itemListenerMixin} from "common/mixin";
 
   export default {
     name: "Home",
@@ -54,6 +54,7 @@
       RecommendView,
       FeatureView,
     },
+    mixins: [itemListenerMixin],
     data() {
       return {
         banners: [],
@@ -67,8 +68,7 @@
         isShowBackTop: false,
         tabOffsetTop: 0,
         isTabFixed: false,
-        saveY: 0,
-        itemImgListener: null
+        saveY: 0
       }
     },
     computed: {
@@ -83,6 +83,8 @@
       this.$refs.scroll.scrollTo(0, this.saveY, 2)
       this.$refs.scroll.refresh()
     },
+    mounted() {
+    },
     deactivated() {
       this.saveY = this.$refs.scroll.getScrollY()
 
@@ -96,16 +98,6 @@
       this.getHomeGoods('pop')
       this.getHomeGoods('new')
       this.getHomeGoods('sell')
-    },
-    mounted() {
-      // 1.图片加载完成啊的事件监听
-      // 对refresh非常频繁的问题，进行防抖操作
-      const refresh = debounce(this.$refs.scroll.refresh, 200)
-      // 监听item中图片的加载完成
-      this.itemImgListener = () => {
-        refresh()
-      }
-      this.$bus.$on('itemImageLoad', this.itemImgListener)
     },
     methods:{
       /*
