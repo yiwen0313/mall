@@ -11,14 +11,6 @@ const store = new Vuex.Store({
   },
   mutations: {
     addCart(state, payload) {
-      /*// 1.查找之前的数组是否有该商品
-      let oldProduct = null
-      for (let item of state.cartList) {
-        if (item.iid === payload.iid) {
-          oldProduct = item
-        }
-      }*/
-
       // 1.查找之前的数组是否有该商品
       let oldProduct = state.cartList.find(item => item.iid === payload.iid)
 
