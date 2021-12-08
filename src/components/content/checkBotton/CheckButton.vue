@@ -9,8 +9,7 @@ export default {
   name: "CheckButton",
   props: {
     isChecked: {
-      type: Boolean,
-      default: false
+      type: Boolean
     }
   }
 }
