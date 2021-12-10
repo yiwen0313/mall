@@ -10,8 +10,8 @@
       <cart-list/>
     </scroll>
 
-
     <!--底部汇总-->
+    <cart-bottom-bar/>
   </div>
 </template>
 
@@ -19,6 +19,7 @@
   import NavBar from "components/common/navbar/NavBar";
   import Scroll from "components/common/scroll/Scroll";
   import CartList from "./childComps/CartList";
+  import CartBottomBar from "./childComps/CartBottomBar";
 
   import {mapGetters} from 'vuex'
 
@@ -27,7 +28,8 @@
     components: {
       NavBar,
       Scroll,
-      CartList
+      CartList,
+      CartBottomBar
     },
     computed: {
       // ...mapGetters(['cartLength'])
@@ -57,7 +59,7 @@
 
     position: absolute;
     top: 44px;
-    bottom: 49px;
+    bottom: 89px;
     left: 0;
     right: 0;
   }
