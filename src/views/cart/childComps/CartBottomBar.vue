@@ -1,7 +1,7 @@
 <template>
   <div class="bottom-bar">
     <div class="check-content">
-      <check-button class="check-all"/>
+      <check-button :isChecked="isSelectAll" class="check-all"/>
       <span>全选</span>
     </div>
 
@@ -12,6 +12,7 @@
 
 <script>
   import CheckButton from "components/content/checkBotton/CheckButton";
+  import {mapGetters} from "vuex";
 
   export default {
     name: "CartBottomBar",
@@ -19,15 +20,20 @@
       CheckButton
     },
     computed: {
+      ...mapGetters(['cartList']),
       totalPrice() {
-        return '￥' + this.$store.state.cartList.filter(item => {
+        return '￥' + this.cartList.filter(item => {
           return item.checked
         }).reduce((preValue, item) => {
           return preValue + item.price * item.count
         }, 0).toFixed(2)
       },
       checkLength() {
-        return this.$store.state.cartList.filter(item => item.checked).length
+        return this.cartList.filter(item => item.checked).length
+      },
+      isSelectAll() {
+        if (this.cartList.length === 0) return false
+        return this.cartList.every(item => item.checked)
       }
     }
   }
