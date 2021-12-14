@@ -1,5 +1,5 @@
 <template>
-  <div  v-show="show" class="toast">
+  <div  v-show="isShow" class="toast">
     <div>{{message}}</div>
   </div>
 </template>
@@ -7,14 +7,20 @@
 <script>
   export default {
     name: "Toast",
-    props: {
-      message: {
-        type: String,
-        default: ''
-      },
-      show: {
-        type: Boolean,
-        default: false
+    data() {
+      return {
+        message: '',
+        isShow: false
+      }
+    },
+    methods: {
+      show(message='默认文字', duration=1500) {
+        this.isShow = true
+        this.message = message
+
+        setTimeout(() => {
+          this.isShow = false
+        }, duration)
       }
     }
   }
