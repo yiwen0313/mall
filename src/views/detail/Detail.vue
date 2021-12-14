@@ -10,8 +10,10 @@
       <detail-comment-info :comment-info="commentInfo" ref="comment"/>
       <goods-list :goods="recommends" ref="recommend"/>
     </scroll>
-    <back-top @click.native="backClick" v-show="isShowBackTop"/>
     <detail-bottom-bar @addCart="addToCart"/>
+    <back-top @click.native="backClick" v-show="isShowBackTop"/>
+
+    <toast :message="message" :show="show"/>
   </div>
 </template>
 
@@ -27,6 +29,7 @@ import DetailBottomBar from "./childComps/DetailBottomBar";
 
 import Scroll from "components/common/scroll/Scroll";
 import GoodsList from "components/content/goods/GoodsList";
+import Toast from "components/common/toast/Toast";
 
 import {getDetail, getRecommend, Goods, Shop, GoodsParam} from "network/detail";
 import {itemListenerMixin, backTopMixin} from "common/mixin";
@@ -46,7 +49,8 @@ export default {
     DetailCommentInfo,
     DetailBottomBar,
     Scroll,
-    GoodsList
+    GoodsList,
+    Toast
   },
   mixins: [itemListenerMixin, backTopMixin],
   data() {
@@ -61,7 +65,9 @@ export default {
       recommends: [],
       themeTopYs: [],
       getThemeTopY: null,
-      currentIndex: 0
+      currentIndex: 0,
+      message: '',
+      show: false
     }
   },
   created() {
@@ -157,7 +163,12 @@ export default {
         console.log(res);
       })*/
       this.addCart(product).then(res => {
-        console.log(res);
+        this.show = true
+        this.message = res
+
+        setTimeout(() => {
+          this.show = false
+        }, 1500)
       })
     }
   }
